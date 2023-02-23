@@ -31,19 +31,25 @@ func main() {
 		logrus.Fatal("Logger init error: ", err)
 	}
 
-	logrus.Infof("Starting sniff ethernet packets at interface %s on port %d", config.GetConfig().Iface, config.GetConfig().Port)
+	if config.GetConfig().Port == 0 {
+		logrus.Infof("Starting sniff ethernet packets at interface %s", config.GetConfig().Iface)
+	} else {
+		logrus.Infof("Starting sniff ethernet packets at interface %s on port %d", config.GetConfig().Iface, config.GetConfig().Port)
+	}
 
 	provider, err := packetprovider.NewEthernetProvider(config.GetConfig().Iface)
 	if err != nil {
 		logrus.Fatal("Error to create packet provider", err)
 	}
 
-	packetFilter := filter.New()
-	packetFilter.SetPort(uint32(config.GetConfig().Port))
+	if config.GetConfig().Port != 0 {
+		packetFilter := filter.New()
+		packetFilter.SetPort(uint32(config.GetConfig().Port))
 
-	err = provider.SetFilter(packetFilter)
-	if err != nil {
-		logrus.Fatal("Error to create filter", err)
+		err = provider.SetFilter(packetFilter)
+		if err != nil {
+			logrus.Fatal("Error to create filter", err)
+		}
 	}
 
 	modelsCh := make(chan models.RenderModel, 1)

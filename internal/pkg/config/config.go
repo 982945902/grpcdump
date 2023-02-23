@@ -21,7 +21,7 @@ var config *Config
 
 var (
 	iface          = flag.String("i", "eth0", "Interface to get packets from")
-	port           = flag.Uint("p", 80, "TCP port")
+	port           = flag.Uint("p", 0, "TCP port")
 	logMetaHeaders = flag.String("meta", "*", "Comma separated list of properties meta info for http2")
 	loggerLevel    = flag.String("log-level", "info", "Logger level")
 	colorOutput    = flag.Bool("color", false, "Output with color")
