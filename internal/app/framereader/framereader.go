@@ -47,9 +47,9 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 			metaHeaders[hf.Name] = hf.Value
 			if hf.Name == ":path" {
 				stream = &models.Stream{
-					ID:   streamID,
-					Path: hf.Value,
-					Type: models.RequestType,
+					ID:          streamID,
+					Path:        hf.Value,
+					Type:        models.RequestType,
 					MetaHeaders: make(map[string]string),
 				}
 
@@ -61,8 +61,8 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 				frameReader.paths.Store(packet.GetConnectionKey(), hf.Value)
 			} else if hf.Name == ":status" {
 				stream = &models.Stream{
-					ID:   streamID,
-					Type: models.ResponseType,
+					ID:          streamID,
+					Type:        models.ResponseType,
 					MetaHeaders: make(map[string]string),
 				}
 
@@ -85,7 +85,7 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 				for key, value := range metaHeaders {
 					stream.MetaHeaders[key] = value
 				}
-				//return models.NewHttp2Response(packet, stream, stream.ResponseGrpcMessage), nil
+				return models.NewHttp2Response(packet, stream, stream.ResponseGrpcMessage), nil
 			} else {
 				stream.MetaHeaders = metaHeaders
 			}
@@ -98,16 +98,13 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 		if err != nil {
 			return nil, err
 		}
-		if grpcMessage == nil {
-			return nil, nil
-		}
 
 		switch stream.Type {
 		case models.RequestType:
 			return models.NewHttp2Request(packet, stream, grpcMessage), nil
 		case models.ResponseType:
-			//stream.ResponseGrpcMessage = grpcMessage
-			return models.NewHttp2Response(packet, stream, grpcMessage), nil
+			stream.ResponseGrpcMessage = grpcMessage
+			//return models.NewHttp2Response(packet, stream, grpcMessage), nil
 		}
 	}
 
