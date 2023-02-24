@@ -11,19 +11,19 @@ import (
 	"golang.org/x/net/http2"
 )
 
-//FrameReader ...
+// FrameReader ...
 type FrameReader struct {
 	framer  *http2.Framer
 	Streams *Streams
 	paths   *sync.Map
 }
 
-//New creates FrameReader
+// New creates FrameReader
 func New(framer *http2.Framer, paths *sync.Map) *FrameReader {
 	return &FrameReader{framer, NewStreams(), paths}
 }
 
-//Read ...
+// Read ...
 func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel, error) {
 	//trying to read http2 frame
 	frame, err := frameReader.framer.ReadFrame()
@@ -85,7 +85,7 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 				for key, value := range metaHeaders {
 					stream.MetaHeaders[key] = value
 				}
-				return models.NewHttp2Response(packet, stream, stream.ResponseGrpcMessage), nil
+				//return models.NewHttp2Response(packet, stream, stream.ResponseGrpcMessage), nil
 			} else {
 				stream.MetaHeaders = metaHeaders
 			}
@@ -106,7 +106,8 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 		case models.RequestType:
 			return models.NewHttp2Request(packet, stream, grpcMessage), nil
 		case models.ResponseType:
-			stream.ResponseGrpcMessage = grpcMessage
+			//stream.ResponseGrpcMessage = grpcMessage
+			return models.NewHttp2Response(packet, stream, grpcMessage), nil
 		}
 	}
 
