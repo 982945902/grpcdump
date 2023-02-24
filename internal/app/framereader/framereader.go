@@ -99,6 +99,10 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 			return nil, err
 		}
 
+		if grpcMessage == nil {
+			return nil, nil
+		}
+
 		switch stream.Type {
 		case models.RequestType:
 			return models.NewHttp2Request(packet, stream, grpcMessage), nil
