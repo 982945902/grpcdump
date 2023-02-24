@@ -27,13 +27,13 @@ func Decode(path string, frame *http2.DataFrame, side int, state *models.GrpcSta
 		buf = append(state.Buf, buf...)
 	}
 
-	streamID := frame.Header().StreamID
+	//streamID := frame.Header().StreamID
 	length := int(binary.BigEndian.Uint32(buf[1:5]))
 
 	compress := buf[0]
 
 	if compress == 1 {
-		logrus.Warningf("%d use compression, msg %q\n", streamID, buf[5:])
+		//logrus.Warningf("%d use compression, msg %q\n", streamID, buf[5:])
 		return nil, nil
 	}
 
