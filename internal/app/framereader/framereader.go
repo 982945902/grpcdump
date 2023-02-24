@@ -98,6 +98,9 @@ func (frameReader *FrameReader) Read(packet *models.Packet) (models.RenderModel,
 		if err != nil {
 			return nil, err
 		}
+		if grpcMessage == nil {
+			return nil, nil
+		}
 
 		switch stream.Type {
 		case models.RequestType:
